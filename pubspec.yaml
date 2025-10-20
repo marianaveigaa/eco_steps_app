@@ -1,46 +1,32 @@
 name: ecosteps
 description: Um app para construir hábitos sustentáveis.
-publish_to: 'none'
 version: 1.0.0+1
 
-# CORREÇÃO 1: Ajustando a sintaxe do ambiente para Flutter
 environment:
-  sdk: '>=3.2.0 <4.0.0' # Formato padrão para projetos Flutter
+  sdk: '>=3.0.0 <4.0.0' 
 
 dependencies:
   flutter:
-    # CORREÇÃO 2: 'flutter' deve ser minúsculo
     sdk: flutter
-
-  cupertino_icons: ^1.0.8
-  provider: ^6.1.5+1
-  shared_preferences: ^2.5.3
-  get_it: ^8.2.0
-  characters: ^1.4.0
-  material_color_utilities: ^0.11.1
-  meta: ^1.16.0
-  go_router: ^16.2.4
-  smooth_page_indicator: ^1.2.1
-  markdown_widget: ^2.3.2+8
-  lucide_flutter: ^0.545.0
+  shared_preferences: ^2.2.2
+  flutter_markdown: ^0.7.1
+  cupertino_icons: ^1.0.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
-  # a linha flutter_launcher_icons estava duplicada, removi uma
-  test_api: ^0.7.6
+  flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
-
   assets:
-    - assets/images/
-    - assets/markdown/
+    - assets/icons/icon.png
+    - assets/policies/privacy.md
+    - assets/policies/terms.md
 
-# A configuração do flutter_launcher_icons deve ficar aqui no final
 flutter_launcher_icons:
-  android: "launcher_icon"
+  android: true
   ios: true
-  image_path: "assets/images/logo.png"
+  image_path: "assets/icons/icon.png"
   min_sdk_android: 21
