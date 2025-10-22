@@ -4,7 +4,6 @@ import '../services/prefs_service.dart';
 import 'photo_selection_bottom_sheet.dart';
 
 class ProfileDrawer extends StatefulWidget {
-  // Mudei para Stateful
   const ProfileDrawer({super.key});
 
   @override
@@ -21,23 +20,36 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
       child: ListView(
         children: [
           DrawerHeader(
-            child: GestureDetector(
-              onTap: () => _showPhotoOptions(context),
-              child: Semantics(
-                label: 'Avatar do usuário. Toque para editar foto.',
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage: hasPhoto ? FileImage(File(photoPath)) : null,
-                  child: !hasPhoto
-                      ? const Text('U', style: TextStyle(fontSize: 40))
-                      : null,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () => _showPhotoOptions(context),
+                  child: CircleAvatar(
+                    radius: 40,
+                    backgroundImage:
+                        hasPhoto ? FileImage(File(photoPath)) : null,
+                    backgroundColor: !hasPhoto
+                        ? Theme.of(context).colorScheme.primary
+                        : null,
+                    child: !hasPhoto
+                        ? const Icon(Icons.person,
+                            size: 40, color: Colors.white)
+                        : null,
+                  ),
                 ),
-              ),
+                const SizedBox(height: 10),
+                const Text('Usuário'),
+              ],
             ),
           ),
           const ListTile(
-              title: Text(
-                  'Mensagem: Sua foto fica neste dispositivo, você pode remover quando quiser.')),
+            leading: Icon(Icons.info),
+            title: Text('Sua foto fica apenas neste dispositivo'),
+          ),
         ],
       ),
     );
@@ -47,8 +59,7 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
     showModalBottomSheet(
       context: context,
       builder: (_) => PhotoSelectionBottomSheet(
-        onPhotoChanged: () =>
-            setState(() {}), // Adicione callback para recarregar
+        onPhotoChanged: () => setState(() {}),
       ),
     );
   }

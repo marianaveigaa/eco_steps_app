@@ -4,23 +4,30 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class LocalPhotoStore {
   static Future<String> savePhoto(File photoFile) async {
+    // Obter diretório de documentos
     final dir = await getApplicationDocumentsDirectory();
     final fileName = 'user_photo_${DateTime.now().millisecondsSinceEpoch}.jpg';
     final filePath = '${dir.path}/$fileName';
 
-    // Comprimir e remover EXIF
-    final compressedFile = await FlutterImageCompress.compressAndGetFile(
-      photoFile.path,
-      filePath,
-      quality: 85, // Ajuste para ≤200KB
-      minWidth: 512,
-      minHeight: 512,
-    );
+    try {
+      // Tentar comprimir a imagem
+      final compressedFile = await FlutterImageCompress.compressAndGetFile(
+        photoFile.path,
+        filePath,
+        quality: 80,
+      );
 
-    if (compressedFile != null) {
-      return compressedFile.path;
-    } else {
-      throw Exception('Falha na compressão da imagem');
+      if (compressedFile != null) {
+        return compressedFile.path;
+      } else {
+        // Se compressão falhar, copiar arquivo original
+        final copiedFile = await photoFile.copy(filePath);
+        return copiedFile.path;
+      }
+    } catch (e) {
+      // Último fallback - copiar original
+      final copiedFile = await photoFile.copy(filePath);
+      return copiedFile.path;
     }
   }
 
@@ -30,9 +37,13 @@ class LocalPhotoStore {
   }
 
   static Future<void> deletePhoto(String path) async {
-    final file = File(path);
-    if (await file.exists()) {
-      await file.delete();
+    try {
+      final file = File(path);
+      if (await file.exists()) {
+        await file.delete();
+      }
+    } catch (e) {
+      // Ignorar erro na deleção
     }
   }
 }

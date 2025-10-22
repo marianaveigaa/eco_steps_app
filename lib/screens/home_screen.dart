@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import '../services/prefs_service.dart';
-import '../widgets/profile_drawer.dart'; // Para Drawer
+import '../widgets/profile_drawer.dart';
 import 'splash_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   void _revokeConsent(BuildContext context) {
-    print('Tentando revogar consentimento'); // Log
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -16,47 +15,50 @@ class HomeScreen extends StatelessWidget {
             'Tem certeza? Isso resetará seu progresso e levará você de volta ao onboarding.'),
         actions: [
           TextButton(
-            onPressed: () {
-              print('Cancelado'); // Log
-              Navigator.pop(context);
-            },
+            onPressed: () => Navigator.pop(context),
             child: const Text('Cancelar'),
           ),
           TextButton(
-            onPressed: () async {
-              print('Revogando...'); // Log
-              await PrefsService.revokeAcceptance();
-              Navigator.pop(context); // Fecha dialog
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text(
-                      'Consentimento revogado. Você será redirecionado.'),
-                  duration: const Duration(seconds: 3),
-                  action: SnackBarAction(
-                    label: 'Desfazer',
-                    onPressed: () async {
-                      await PrefsService.acceptPolicies('v1');
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Consentimento restaurado!')),
-                      );
-                    },
-                  ),
-                ),
-              );
-              Future.delayed(const Duration(seconds: 3), () {
-                print('Redirecionando para Splash'); // Log
-                Navigator.pushReplacement(
-                  // Mudei para pushReplacement se pushAndRemoveUntil falhar
-                  context,
-                  MaterialPageRoute(builder: (_) => const SplashScreen()),
-                );
-              });
-            },
+            onPressed: () => _confirmRevoke(context),
             child: const Text('Revogar'),
           ),
         ],
       ),
+    );
+  }
+
+  void _confirmRevoke(BuildContext context) async {
+    await PrefsService.revokeAcceptance();
+
+    // Fecha o dialog primeiro
+    // ignore: use_build_context_synchronously
+    Navigator.pop(context);
+
+    // Mostra snackbar
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Consentimento revogado. Redirecionando...'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      // Navega após delay
+      Future.delayed(const Duration(seconds: 2), () {
+        if (context.mounted) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => const SplashScreen()),
+            (route) => false,
+          );
+        }
+      });
+    }
+  }
+
+  void _showComingSoon(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Funcionalidade em breve!')),
     );
   }
 
@@ -73,41 +75,32 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      drawer: const ProfileDrawer(), // Adicione se não tiver
+      drawer: const ProfileDrawer(),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Icon(Icons.eco, size: 100, color: Color(0xFF16A34A)),
               const SizedBox(height: 20),
               Text(
                 'Bem-vindo ao EcoSteps!',
                 style: Theme.of(context).textTheme.headlineSmall,
-                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
               Card(
-                elevation: 4,
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      Text(
+                      const Text(
                         'Crie sua primeira meta sustentável da semana!',
-                        style: Theme.of(context).textTheme.bodyLarge,
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 20),
                       ElevatedButton(
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Funcionalidade em breve!')),
-                          );
-                        },
+                        onPressed: () => _showComingSoon(context),
                         child: const Text('Criar Meta'),
                       ),
                     ],

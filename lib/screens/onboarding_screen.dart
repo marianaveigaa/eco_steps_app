@@ -19,26 +19,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       title: 'Bem-vindo ao EcoSteps',
       description: 'Transforme pequenas ações em grandes impactos.',
       showSkip: true,
-      icon: Icons.eco, // Ícone de folha para sustentabilidade
+      icon: Icons.eco,
     ),
     const OnboardingPage(
       title: 'Como Funciona',
       description:
           'Escolha metas, registre seu progresso e veja seu impacto crescer.',
       showSkip: true,
-      icon: Icons.trending_up, // Ícone de gráfico para progresso
+      icon: Icons.trending_up,
     ),
     const OnboardingPage(
       title: 'Privacidade Primeiro',
       description:
           'Nós medimos seu avanço com base nas informações que você escolhe registrar. Nunca acessamos dados sensíveis.',
       showSkip: false,
-      icon: Icons.privacy_tip, // Ícone de privacidade para LGPD
+      icon: Icons.privacy_tip,
     ),
   ];
 
   void _onPageChanged(int page) {
-    setState(() => _currentPage = page);
+    if (mounted) {
+      setState(() => _currentPage = page);
+    }
   }
 
   void _nextPage() {
@@ -64,10 +66,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void _skip() => _goToPolicyViewer();
 
   void _goToPolicyViewer() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const PolicyViewerScreen()),
-    );
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const PolicyViewerScreen()),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override

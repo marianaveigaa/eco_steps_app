@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_markdown/flutter_markdown.dart';
-import '../services/prefs_service.dart'; // Já existe
+import '../services/prefs_service.dart';
 import 'home_screen.dart';
 
 class PolicyViewerScreen extends StatefulWidget {
@@ -28,35 +28,49 @@ class _PolicyViewerScreenState extends State<PolicyViewerScreen> {
     _scrollController.addListener(_updateScrollProgress);
   }
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   Future<void> _loadPolicies() async {
     _privacyText = await rootBundle.loadString('assets/policies/privacy.md');
     _termsText = await rootBundle.loadString('assets/policies/terms.md');
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _updateScrollProgress() {
     if (_scrollController.hasClients) {
       final maxScroll = _scrollController.position.maxScrollExtent;
       final currentScroll = _scrollController.position.pixels;
-      setState(() {
-        _scrollProgress = maxScroll > 0 ? currentScroll / maxScroll : 1.0;
-      });
+      if (mounted) {
+        setState(() {
+          _scrollProgress = maxScroll > 0 ? currentScroll / maxScroll : 1.0;
+        });
+      }
     }
   }
 
   void _markAsRead() {
-    setState(() {
-      _privacyRead = true;
-      _termsRead = true;
-    });
+    if (mounted) {
+      setState(() {
+        _privacyRead = true;
+        _termsRead = true;
+      });
+    }
   }
 
   void _accept() async {
     await PrefsService.acceptPolicies('v1');
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const HomeScreen()),
-    );
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+      );
+    }
   }
 
   @override
@@ -93,7 +107,11 @@ class _PolicyViewerScreenState extends State<PolicyViewerScreen> {
                       'Aceito as políticas de privacidade e termos.'),
                   value: _accepted,
                   onChanged: (_privacyRead && _termsRead)
-                      ? (value) => setState(() => _accepted = value ?? false)
+                      ? (value) {
+                          if (mounted) {
+                            setState(() => _accepted = value ?? false);
+                          }
+                        }
                       : null,
                 ),
                 ElevatedButton(
