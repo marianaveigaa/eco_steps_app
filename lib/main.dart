@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/splash_screen.dart';
-import 'services/prefs_service.dart';
+import 'services/prefs_service.dart'; // Já existe
 import 'theme/app_theme.dart';
 
 void main() async {

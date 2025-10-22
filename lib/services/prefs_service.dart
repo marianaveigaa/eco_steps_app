@@ -7,42 +7,55 @@ class PrefsService {
     _prefs = await SharedPreferences.getInstance();
   }
 
-  // Chaves
-  static const String _privacyRead = 'privacy_read_v1';
-  static const String _termsRead = 'terms_read_v1';
-  static const String _policiesVersionAccepted = 'policies_version_accepted';
-  static const String _acceptedAt = 'accepted_at';
-  static const String _onboardingCompleted = 'onboarding_completed';
-  static const String _tipsEnabled = 'tips_enabled';
-
-  // Métodos
+  // Métodos existentes (mantenha)...
   static bool isPolicyAccepted(String version) {
-    return _prefs.getString(_policiesVersionAccepted) == version;
+    return _prefs.getString('policies_version_accepted') == version;
   }
 
   static Future<void> acceptPolicies(String version) async {
-    await _prefs.setBool(_privacyRead, true);
-    await _prefs.setBool(_termsRead, true);
-    await _prefs.setString(_policiesVersionAccepted, version);
-    await _prefs.setString(_acceptedAt, DateTime.now().toIso8601String());
-    await _prefs.setBool(_onboardingCompleted, true);
+    await _prefs.setBool('privacy_read_v1', true);
+    await _prefs.setBool('terms_read_v1', true);
+    await _prefs.setString('policies_version_accepted', version);
+    await _prefs.setString('accepted_at', DateTime.now().toIso8601String());
+    await _prefs.setBool('onboarding_completed', true);
   }
 
   static Future<void> revokeAcceptance() async {
-    await _prefs.remove(_privacyRead);
-    await _prefs.remove(_termsRead);
-    await _prefs.remove(_policiesVersionAccepted);
-    await _prefs.remove(_acceptedAt);
-    await _prefs.setBool(_onboardingCompleted, false);
+    await _prefs.remove('privacy_read_v1');
+    await _prefs.remove('terms_read_v1');
+    await _prefs.remove('policies_version_accepted');
+    await _prefs.remove('accepted_at');
+    await _prefs.setBool('onboarding_completed', false);
   }
 
-  static bool get privacyRead => _prefs.getBool(_privacyRead) ?? false;
-  static bool get termsRead => _prefs.getBool(_termsRead) ?? false;
+  static bool get privacyRead => _prefs.getBool('privacy_read_v1') ?? false;
+  static bool get termsRead => _prefs.getBool('terms_read_v1') ?? false;
   static String? get acceptedVersion =>
-      _prefs.getString(_policiesVersionAccepted);
-  static String? get acceptedAt => _prefs.getString(_acceptedAt);
+      _prefs.getString('policies_version_accepted');
+  static String? get acceptedAt => _prefs.getString('accepted_at');
   static bool get onboardingCompleted =>
-      _prefs.getBool(_onboardingCompleted) ?? false;
-  static bool get tipsEnabled => _prefs.getBool(_tipsEnabled) ?? true;
-  static set tipsEnabled(bool value) => _prefs.setBool(_tipsEnabled, value);
+      _prefs.getBool('onboarding_completed') ?? false;
+  static bool get tipsEnabled => _prefs.getBool('tips_enabled') ?? true;
+  static set tipsEnabled(bool value) => _prefs.setBool('tips_enabled', value);
+
+  // Novos métodos para foto (adaptados do PRD)
+  static String? get userPhotoPath => _prefs.getString('userPhotoPath');
+  static set userPhotoPath(String? value) =>
+      _prefs.setString('userPhotoPath', value ?? '');
+
+  static DateTime? get userPhotoUpdatedAt {
+    final timestamp = _prefs.getInt('userPhotoUpdatedAt');
+    return timestamp != null
+        ? DateTime.fromMillisecondsSinceEpoch(timestamp)
+        : null;
+  }
+
+  static set userPhotoUpdatedAt(DateTime? value) {
+    _prefs.setInt('userPhotoUpdatedAt', value?.millisecondsSinceEpoch ?? 0);
+  }
+
+  static Future<void> clearPhotoData() async {
+    await _prefs.remove('userPhotoPath');
+    await _prefs.remove('userPhotoUpdatedAt');
+  }
 }

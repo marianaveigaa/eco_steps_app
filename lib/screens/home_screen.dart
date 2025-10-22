@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import '../services/prefs_service.dart';
-import 'splash_screen.dart'; // Para redirecionar após revogação sem "Desfazer"
+import '../widgets/profile_drawer.dart'; // Para Drawer
+import 'splash_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   void _revokeConsent(BuildContext context) {
+    print('Tentando revogar consentimento'); // Log
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -14,13 +16,17 @@ class HomeScreen extends StatelessWidget {
             'Tem certeza? Isso resetará seu progresso e levará você de volta ao onboarding.'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              print('Cancelado'); // Log
+              Navigator.pop(context);
+            },
             child: const Text('Cancelar'),
           ),
           TextButton(
             onPressed: () async {
+              print('Revogando...'); // Log
               await PrefsService.revokeAcceptance();
-              Navigator.pop(context); // Fecha o dialog
+              Navigator.pop(context); // Fecha dialog
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: const Text(
@@ -29,7 +35,6 @@ class HomeScreen extends StatelessWidget {
                   action: SnackBarAction(
                     label: 'Desfazer',
                     onPressed: () async {
-                      // Restaura o consentimento
                       await PrefsService.acceptPolicies('v1');
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -39,12 +44,12 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               );
-              // Após o SnackBar (se não "Desfazer"), redireciona ao fluxo de consentimento
               Future.delayed(const Duration(seconds: 3), () {
-                Navigator.pushAndRemoveUntil(
+                print('Redirecionando para Splash'); // Log
+                Navigator.pushReplacement(
+                  // Mudei para pushReplacement se pushAndRemoveUntil falhar
                   context,
                   MaterialPageRoute(builder: (_) => const SplashScreen()),
-                  (route) => false,
                 );
               });
             },
@@ -63,20 +68,18 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () =>
-                _revokeConsent(context), // Botão para revogar (para testes)
+            onPressed: () => _revokeConsent(context),
             tooltip: 'Revogar Consentimento',
           ),
         ],
       ),
+      drawer: const ProfileDrawer(), // Adicione se não tiver
       body: Center(
-        // Novo: Centraliza tudo horizontal e verticalmente
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment
-                .center, // Garante alinhamento central horizontal
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Icon(Icons.eco, size: 100, color: Color(0xFF16A34A)),
               const SizedBox(height: 20),
@@ -100,7 +103,6 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
-                          // TODO: Navegar para tela de criação de meta (não implementada ainda)
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                                 content: Text('Funcionalidade em breve!')),

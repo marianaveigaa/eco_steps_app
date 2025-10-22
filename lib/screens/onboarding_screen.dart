@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../widgets/onboarding_page.dart';
 import '../widgets/dots_indicator.dart';
 import 'policy_viewer_screen.dart';
-import '../services/prefs_service.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});

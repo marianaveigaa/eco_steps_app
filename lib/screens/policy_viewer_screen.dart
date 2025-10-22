@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_markdown/flutter_markdown.dart';
-import '../services/prefs_service.dart';
+import '../services/prefs_service.dart'; // Já existe
 import 'home_screen.dart';
 
 class PolicyViewerScreen extends StatefulWidget {

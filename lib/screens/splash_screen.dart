@@ -4,6 +4,7 @@ import 'onboarding_screen.dart';
 import '../services/prefs_service.dart';
 
 class SplashScreen extends StatefulWidget {
+  // Certifique-se de que é uma classe
   const SplashScreen({super.key});
 
   @override
@@ -39,16 +40,10 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              'assets/icons/icon.png', // Usa a imagem gerada com o prompt
-              height: 150, // Ajuste o tamanho para caber bem
-              width: 150,
-            ),
+            Image.asset('assets/icons/icon.png',
+                height: 150, width: 150), // Se existir
             const SizedBox(height: 20),
-            Text(
-              'EcoSteps',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
+            Text('EcoSteps', style: Theme.of(context).textTheme.headlineSmall),
           ],
         ),
       ),
