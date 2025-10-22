@@ -109,17 +109,6 @@ Siga o protocolo de QA do PRD:
 * **Desempenho:** Drawer carrega ≤100ms.
 * Execute testes unitários: `flutter test`.
 
-## Checklist de Conformidade (Avatar)
-
-- [x] Adicionar foto (câmera/galeria) funciona
-- [x] Remover foto apaga arquivo local e limpa preferências
-- [x] Fallback para iniciais quando sem foto ou em erro
-- [x] Compressão ≤ ~200KB (usando quality:85)
-- [x] EXIF/GPS removido
-- [x] Drawer sem lentidão perceptível (meta: ≤100ms)
-- [x] Ações acessíveis (≥48dp, rótulos/semantics, foco)
-- [x] 1 unit test e 1 widget test passando
-
 ## Contribuição
 
 Contribuições são bem-vindas! Para contribuir:
