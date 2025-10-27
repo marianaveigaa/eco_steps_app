@@ -1,10 +1,72 @@
 import 'package:flutter/material.dart';
 import '../services/prefs_service.dart';
+import '../services/supabase_repository.dart';
+import '../services/local_cache_service.dart';
+import '../models/provider.dart';
 import '../widgets/profile_drawer.dart';
 import 'splash_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final SupabaseRepository _repository = SupabaseRepository();
+  final LocalCacheService _cacheService = LocalCacheService();
+
+  List<EcoProvider> _providers = [];
+  bool _isLoading = true;
+  bool _hasError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    try {
+      setState(() {
+        _isLoading = true;
+        _hasError = false;
+      });
+
+      // Primeiro carrega do cache para mostrar rápido
+      final cachedProviders = await _cacheService.getCachedProviders();
+      if (cachedProviders.isNotEmpty && mounted) {
+        setState(() {
+          _providers = cachedProviders;
+        });
+      }
+
+      // Depois tenta sincronizar com o Supabase
+      final lastSync = await _cacheService.getLastSync();
+      final freshProviders = await _repository.getProviders(since: lastSync);
+
+      if (freshProviders.isNotEmpty && mounted) {
+        await _cacheService.cacheProviders(freshProviders);
+        setState(() {
+          _providers = freshProviders;
+        });
+      }
+    } catch (e) {
+      debugPrint('Erro ao carregar dados: $e');
+      if (mounted) {
+        setState(() {
+          _hasError = true;
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   void _revokeConsent(BuildContext context) {
     showDialog(
@@ -29,13 +91,11 @@ class HomeScreen extends StatelessWidget {
 
   void _confirmRevoke(BuildContext context) async {
     await PrefsService.revokeAcceptance();
+    await _cacheService.clearCache();
 
-    // Fecha o dialog primeiro
-    // ignore: use_build_context_synchronously
-    Navigator.pop(context);
-
-    // Mostra snackbar
     if (context.mounted) {
+      Navigator.pop(context);
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Consentimento revogado. Redirecionando...'),
@@ -43,7 +103,6 @@ class HomeScreen extends StatelessWidget {
         ),
       );
 
-      // Navega após delay
       Future.delayed(const Duration(seconds: 2), () {
         if (context.mounted) {
           Navigator.pushAndRemoveUntil(
@@ -62,6 +121,29 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  // CORREÇÃO: Método separado para construir cards
+  Widget _buildProviderCard(EcoProvider provider) {
+    final distanceText =
+        provider.distanceKm != null ? '${provider.distanceKm} km' : 'N/A';
+
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: ListTile(
+        leading: provider.imageUrl != null
+            ? CircleAvatar(
+                backgroundImage: NetworkImage(provider.imageUrl!),
+              )
+            : const CircleAvatar(
+                child: Icon(Icons.eco),
+              ),
+        title: Text(provider.name),
+        subtitle: Text('⭐ ${provider.rating} • $distanceText'), // CORREÇÃO AQUI
+        trailing: const Icon(Icons.arrow_forward_ios),
+        onTap: () => _showComingSoon(context),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,43 +155,84 @@ class HomeScreen extends StatelessWidget {
             onPressed: () => _revokeConsent(context),
             tooltip: 'Revogar Consentimento',
           ),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _loadData,
+            tooltip: 'Atualizar',
+          ),
         ],
       ),
       drawer: const ProfileDrawer(),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.eco, size: 100, color: Color(0xFF16A34A)),
-              const SizedBox(height: 20),
-              Text(
-                'Bem-vindo ao EcoSteps!',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 20),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      const Text(
-                        'Crie sua primeira meta sustentável da semana!',
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () => _showComingSoon(context),
-                        child: const Text('Criar Meta'),
-                      ),
-                    ],
-                  ),
+      body: _buildBody(), // CORREÇÃO: Método separado
+    );
+  }
+
+  // CORREÇÃO: Método separado para o body
+  Widget _buildBody() {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_hasError) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 64),
+            const SizedBox(height: 16),
+            const Text('Erro ao carregar dados'),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _loadData,
+              child: const Text('Tentar Novamente'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_providers.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.eco, size: 100, color: Color(0xFF16A34A)),
+            const SizedBox(height: 20),
+            const Text(
+              'Bem-vindo ao EcoSteps!',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    const Text(
+                      'Crie sua primeira meta sustentável da semana!',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () => _showComingSoon(context),
+                      child: const Text('Criar Meta'),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: _loadData,
+      child: ListView.builder(
+        itemCount: _providers.length,
+        itemBuilder: (context, index) {
+          return _buildProviderCard(_providers[index]);
+        },
       ),
     );
   }

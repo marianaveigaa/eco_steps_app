@@ -3,7 +3,7 @@ description: Um app para construir hábitos sustentáveis.
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0' 
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -17,18 +17,24 @@ dependencies:
   permission_handler: ^12.0.1
   file_selector: ^1.0.0
   path: ^1.8.3
+  # NOVAS DEPENDÊNCIAS
+  supabase_flutter: ^2.3.0
+  flutter_dotenv: ^5.1.0
+  # REMOVER drift por enquanto para simplificar
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
   flutter_launcher_icons: ^0.13.1
+  # REMOVER drift_dev e build_runner
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/icons/icon.png
-    - assets/policies/privacy.md
-    - assets/policies/terms.md
+    - assets/icons/
+    - assets/policies/
+    - .env # VERIFIQUE se o arquivo .env existe na raiz
 
 flutter_launcher_icons:
   android: true
