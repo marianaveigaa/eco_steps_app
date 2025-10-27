@@ -37,21 +37,21 @@ EcoSteps é um aplicativo Flutter desenvolvido para ajudar usuários a desenvolv
 * **Dispositivo/Emulador:** Android/iOS/Windows/macOS/Linux
 * **Conta Supabase:** Para backend em nuvem
 
-# Desenvolvimento
+## Desenvolvimento
 flutter run
 
-# Plataformas específicas
+## Plataformas específicas
 flutter run -d windows
 flutter run -d chrome
 flutter run -d android
 flutter run -d ios
 
-# Build para produção
+## Build para produção
 flutter build apk
 flutter build ios
 flutter build windows
 
-# 🏗️ Arquitetura do Projeto
+## 🏗️ Arquitetura do Projeto
 
 lib/
 
@@ -95,27 +95,26 @@ lib/
 
 └── main.dart                  # Inicialização do app
 
-# 🔒 Segurança e Privacidade
+## 🔒 Segurança e Privacidade
 * Variáveis de ambiente para credenciais sensíveis
 * Row Level Security no Supabase para proteção de dados
 * Cache local com dados anônimos
 * Compressão de imagens com remoção de EXIF/GPS
 * Transparência total com políticas acessíveis
 
-# Execute os testes
+## Execute os testes
 flutter test
 
-# Protocolo de QA:
-# ✅ Onboarding → Políticas → Aceite → Home con Drawer
-# ✅ Adicionar/remover foto de perfil
-# ✅ Carregamento de provedores online/offline
-# ✅ Sincronización automática
-# ✅ Acessibilidade e performance
+## Protocolo de QA:
+### ✅ Onboarding → Políticas → Aceite → Home con Drawer
+### ✅ Adicionar/remover foto de perfil
+### ✅ Carregamento de provedores online/offline
+### ✅ Sincronización automática
+### ✅ Acessibilidade e performance
 
-# 📄 Licença
+## 📄 Licença
 Este projeto está sob a licença MIT. Veja o arquivo LICENSE para detalhes.
 
-# 📞 Contato
+## 📞 Contato
 * **Desenvolvedora: Mariana Veiga**
-
 * **Email: suporte@ecosteps.com (fictício)**
