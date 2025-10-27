@@ -1,4 +1,4 @@
-# EcoSteps - Hábitos Sustentáveis
+# 🌱 EcoSteps - Hábitos Sustentáveis
 
 EcoSteps é um aplicativo Flutter desenvolvido para ajudar usuários a desenvolver e monitorar hábitos sustentáveis. Com foco em metas de redução de lixo, uso de água e energia, o app oferece um onboarding intuitivo, consentimento de privacidade em conformidade com a LGPD, e uma experiência transparente e acessível.
 
