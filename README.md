@@ -2,126 +2,100 @@
 
 EcoSteps é um aplicativo Flutter desenvolvido para ajudar usuários a desenvolver e monitorar hábitos sustentáveis. Com foco em metas de redução de lixo, uso de água e energia, o app oferece um onboarding intuitivo, consentimento de privacidade em conformidade com a LGPD, e uma experiência transparente e acessível.
 
-**Novo:** Avatar dinâmico no Drawer com foto do usuário (câmera/galeria), compressão automática ≤200KB, remoção de EXIF/GPS e fallback para iniciais.
+**Novo:** Integração com Supabase para dados em tempo real + Avatar dinâmico no Drawer com foto do usuário (câmera/galeria/desktop), compressão automática ≤200KB, remoção de EXIF/GPS e fallback para iniciais.
 
-## Funcionalidades Principais
+## 🚀 Funcionalidades Principais
 
 * **Onboarding Interativo:** Três telas com ícones distintos (sustentabilidade, progresso e privacidade) para introduzir o usuário ao app.
 * **Consentimento de Privacidade:** Leitura obrigatória de políticas e termos em Markdown, com barra de progresso e aceite opt-in.
-* **Home Personalizada:** Card de boas-vindas para criar a primeira meta sustentável.
+* **Home Conectada:** Lista dinâmica de provedores sustentáveis com dados em tempo real do Supabase.
+* **Cache Inteligente:** Funcionamento offline com sincronização automática quando online.
 * **Revogação de Consentimento:** Opção em configurações com confirmação e possibilidade de "Desfazer".
-* **Avatar com Foto no Drawer:** Adicione/altere/remova foto via câmera/galeria; compressão automática, persistência local, fallback para iniciais; acessível (≥48dp, Semantics).
+* **Avatar com Foto no Drawer:** Adicione/altere/remova foto via câmera/galeria/desktop; compressão automática, persistência local, fallback para iniciais; acessível (≥48dp, Semantics).
 * **Acessibilidade (A11Y):** Suporte a text scaling, alto contraste WCAG AA, alvos de toque ≥48dp e foco visível.
 * **Privacidade LGPD:** Transparência total, dados armazenados localmente, sem coleta automática de informações sensíveis.
 
-## Pré-requisitos
+## 🛠️ Tecnologias Utilizadas
 
-* **Flutter:** Versão 3.0 ou superior. [Instale aqui](https://flutter.dev/docs/get-started/install).
-* **Dart:** Incluído com Flutter.
-* **VS Code:** Recomendado, com extensões Flutter e Dart instaladas.
-* **Dispositivo/Emulador:** Android/iOS ou desktop. Para testar a câmera, use um dispositivo real.
+* **Flutter:** Framework para desenvolvimento cross-platform
+* **Dart:** Linguagem de programação
+* **Supabase:** Backend-as-a-Service com PostgreSQL, Auth e Storage
+* **shared_preferences:** Para armazenamento local de dados
+* **flutter_markdown:** Para renderizar políticas em Markdown
+* **flutter_launcher_icons:** Para gerar ícones do app automaticamente
+* **image_picker:** Para seleção de câmera/galeria
+* **file_selector:** Para seleção de arquivos em desktop
+* **flutter_image_compress:** Para compressão e remoção de EXIF/GPS
+* **path_provider:** Para diretório de armazenamento local
+* **flutter_dotenv:** Para gerenciamento seguro de variáveis de ambiente
 
-## Instalação
+## 📋 Pré-requisitos
 
-1.  Clone o repositório:
-    ```bash
-    git clone [https://github.com/seu-usuario/ecosteps.git](https://github.com/seu-usuario/ecosteps.git)
-    cd ecosteps
-    ```
+* **Flutter:** Versão 3.0 ou superior. [Instale aqui](https://flutter.dev/docs/get-started/install)
+* **Dart:** Incluído com Flutter
+* **VS Code:** Recomendado, com extensões Flutter e Dart instaladas
+* **Dispositivo/Emulador:** Android/iOS/Windows/macOS/Linux
+* **Conta Supabase:** Para backend em nuvem
 
-2.  Instale as dependências:
-    ```bash
-    flutter pub get
-    ```
+# Desenvolvimento
+flutter run
 
-3.  Gere o ícone do app (opcional, mas recomendado):
-    ```bash
-    flutter pub run flutter_launcher_icons
-    ```
+# Plataformas específicas
+flutter run -d windows
+flutter run -d chrome
+flutter run -d android
+flutter run -d ios
 
-4.  Configure permissões:
+# Build para produção
+flutter build apk
+flutter build ios
+flutter build windows
 
-    * **Android:** Adicione ao `android/app/src/main/AndroidManifest.xml`:
-        ```xml
-        <uses-permission android:name="android.permission.CAMERA" />
-        <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-        ```
+# 🏗️ Arquitetura do Projeto
 
-    * **iOS:** Adicione ao `ios/Runner/Info.plist`:
-        ```xml
-        <key>NSCameraUsageDescription</key>
-        <string>Precisamos acessar a câmera para tirar fotos de perfil.</string>
-        <key>NSPhotoLibraryUsageDescription</key>
-        <string>Precisamos acessar a galeria para fotos de perfil.</string>
-        ```
+lib/
+├── models/
+│   └── provider.dart          # Modelo de dados EcoProvider
+├── services/
+│   ├── supabase_repository.dart # Comunicação com Supabase
+│   ├── local_cache_service.dart # Cache offline
+│   ├── prefs_service.dart     # Preferências locais
+│   └── local_photo_store.dart # Gerenciamento de fotos
+├── screens/
+│   ├── home_screen.dart       # Tela principal com provedores
+│   ├── onboarding_screen.dart # Onboarding
+│   ├── splash_screen.dart     # Tela de inicialização
+│   └── policy_viewer_screen.dart # Políticas de privacidade
+├── widgets/
+│   ├── profile_drawer.dart    # Drawer com avatar
+│   ├── photo_selection_bottom_sheet.dart # Seleção de fotos
+│   ├── onboarding_page.dart   # Páginas de onboarding
+│   └── dots_indicator.dart    # Indicador de progresso
+├── theme/
+│   └── app_theme.dart         # Temas claro/escuro
+└── main.dart                  # Inicialização do app
 
-5.  Adicione os arquivos de assets:
-    * Crie a pasta `assets/markdown/` e adicione `privacy_policy_v1.md` e `terms_of_use_v1.md`.
-    * Adicione `assets/images/logo.png` (1024x1024) para o gerador de ícones.
+# 🔒 Segurança e Privacidade
+* Variáveis de ambiente para credenciais sensíveis
+* Row Level Security no Supabase para proteção de dados
+* Cache local com dados anônimos
+* Compressão de imagens com remoção de EXIF/GPS
+* Transparência total com políticas acessíveis
 
-## Como Executar
+# Execute os testes
+flutter test
 
-1.  Conecte um dispositivo ou inicie um emulador.
-2.  Execute o app:
-    ```bash
-    flutter run
-    ```
-3.  Para builds específicos:
-    ```bash
-    flutter build apk
-    flutter build ios
-    flutter run -d chrome
-    flutter run -d windows
-    ```
+# Protocolo de QA:
+# ✅ Onboarding → Políticas → Aceite → Home con Drawer
+# ✅ Adicionar/remover foto de perfil
+# ✅ Carregamento de provedores online/offline
+# ✅ Sincronización automática
+# ✅ Acessibilidade e performance
 
-## Como Usar o Avatar com Foto
+# 📄 Licença
+Este projeto está sob a licença MIT. Veja o arquivo LICENSE para detalhes.
 
-1.  Abra o Drawer (ícone de menu no AppBar da Home).
-2.  Toque no avatar (CircleAvatar).
-3.  Escolha "Câmera" ou "Galeria" para adicionar/alterar foto.
-4.  A imagem é comprimida automaticamente (≤200KB), EXIF/GPS removido, e salva localmente.
-5.  **Fallback:** Se sem foto, mostra iniciais ("U").
-6.  **Para remover:** Escolha "Remover Foto" no BottomSheet.
+# 📞 Contato
+* **Desenvolvedora: Mariana Veiga**
 
-> **Nota:** Em plataformas desktop, a câmera pode não funcionar – use galeria ou dispositivo real.
-
-## Tecnologias Utilizadas
-
-* **Flutter:** Framework para desenvolvimento cross-platform.
-* **Dart:** Linguagem de programação.
-* **shared_preferences:** Para armazenamento local de dados (consentimento, caminho da foto).
-* **markdown_widget:** Para renderizar políticas em Markdown (substituto do `flutter_markdown`).
-* **flutter_launcher_icons:** Para gerar ícones do app automaticamente.
-* **image_picker:** Para seleção de câmera/galeria.
-* **flutter_image_compress:** Para compressão e remoção de EXIF/GPS.
-* **path_provider:** Para diretório de armazenamento local.
-* **go_router:** Para roteamento de URL.
-
-## Testes e QA
-
-Siga o protocolo de QA do PRD:
-
-* **Execução Limpa:** Onboarding → Políticas → Aceite → Home com Drawer.
-* **Adicionar Foto:** Selecione câmera/galeria; verifique compressão ≤200KB e EXIF removido.
-* **Remover Foto:** Apaga arquivo e limpa prefs; volta a iniciais.
-* **Fallback:** Sem foto, mostra iniciais; erro carrega fallback.
-* **A11Y:** Toque ≥48dp, Semantics, foco visível.
-* **Desempenho:** Drawer carrega ≤100ms.
-* Execute testes unitários: `flutter test`.
-
-## Contribuição
-
-Contribuições são bem-vindas! Para contribuir:
-
-1.  Fork o repositório.
-2.  Crie uma branch para sua feature: `git checkout -b feature/nova-funcionalidade`.
-3.  Commit suas mudanças: `git commit -m 'Adiciona nova funcionalidade'`.
-4.  Push e abra um Pull Request.
-
-## Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para detalhes.
-
-## Contato
-* **Desenvolvedora:** Mariana Veiga
-* **Email:** suporte@ecosteps.com (fictício)
+* **Email: suporte@ecosteps.com (fictício)**
