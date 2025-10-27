@@ -102,7 +102,7 @@ lib/
 * Compressão de imagens com remoção de EXIF/GPS
 * Transparência total com políticas acessíveis
 
-## Execute os testes
+## 🧪 Execute os testes
 flutter test
 
 ## Protocolo de QA:
