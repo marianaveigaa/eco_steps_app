@@ -54,25 +54,45 @@ flutter build windows
 # 🏗️ Arquitetura do Projeto
 
 lib/
+
 ├── models/
+
 │   └── provider.dart          # Modelo de dados EcoProvider
+
 ├── services/
+
 │   ├── supabase_repository.dart # Comunicação com Supabase
+
 │   ├── local_cache_service.dart # Cache offline
+
 │   ├── prefs_service.dart     # Preferências locais
+
 │   └── local_photo_store.dart # Gerenciamento de fotos
+
 ├── screens/
+
 │   ├── home_screen.dart       # Tela principal com provedores
+
 │   ├── onboarding_screen.dart # Onboarding
+
 │   ├── splash_screen.dart     # Tela de inicialização
+
 │   └── policy_viewer_screen.dart # Políticas de privacidade
+
 ├── widgets/
+
 │   ├── profile_drawer.dart    # Drawer com avatar
+
 │   ├── photo_selection_bottom_sheet.dart # Seleção de fotos
+
 │   ├── onboarding_page.dart   # Páginas de onboarding
+
 │   └── dots_indicator.dart    # Indicador de progresso
+
 ├── theme/
+
 │   └── app_theme.dart         # Temas claro/escuro
+
 └── main.dart                  # Inicialização do app
 
 # 🔒 Segurança e Privacidade
