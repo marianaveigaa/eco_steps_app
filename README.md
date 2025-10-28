@@ -31,11 +31,11 @@ EcoSteps é um aplicativo Flutter desenvolvido para ajudar usuários a desenvolv
 
 ## 📋 Pré-requisitos
 
-* **Flutter:** Versão 3.0 ou superior. [Instale aqui](https://flutter.dev/docs/get-started/install)
-* **Dart:** Incluído com Flutter
-* **VS Code:** Recomendado, com extensões Flutter e Dart instaladas
-* **Dispositivo/Emulador:** Android/iOS/Windows/macOS/Linux
-* **Conta Supabase:** Para backend em nuvem
+* **Flutter:** Versão 3.0 ou superior.
+* **Dart:** Incluído com Flutter.
+* **VS Code:** Recomendado, com extensões Flutter e Dart instaladas.
+* **Dispositivo/Emulador:** Android/iOS/Windows/macOS/Linux.
+* **Conta Supabase:** Para backend em nuvem.
 
 ## Desenvolvimento
 flutter run
@@ -57,43 +57,43 @@ lib/
 
 ├── models/
 
-│   └── provider.dart          # Modelo de dados EcoProvider
+│   └── provider.dart                # Modelo de dados EcoProvider
 
 ├── services/
 
-│   ├── supabase_repository.dart # Comunicação com Supabase
+│   ├── supabase_repository.dart     # Comunicação com Supabase
 
-│   ├── local_cache_service.dart # Cache offline
+│   ├── local_cache_service.dart     # Cache offline
 
-│   ├── prefs_service.dart     # Preferências locais
+│   ├── prefs_service.dart           # Preferências locais
 
-│   └── local_photo_store.dart # Gerenciamento de fotos
+│   └── local_photo_store.dart       # Gerenciamento de fotos
 
 ├── screens/
 
-│   ├── home_screen.dart       # Tela principal com provedores
+│   ├── home_screen.dart             # Tela principal com provedores
 
-│   ├── onboarding_screen.dart # Onboarding
+│   ├── onboarding_screen.dart       # Onboarding
 
-│   ├── splash_screen.dart     # Tela de inicialização
+│   ├── splash_screen.dart           # Tela de inicialização
 
-│   └── policy_viewer_screen.dart # Políticas de privacidade
+│   └── policy_viewer_screen.dart    # Políticas de privacidade
 
 ├── widgets/
 
-│   ├── profile_drawer.dart    # Drawer com avatar
+│   ├── profile_drawer.dart                   # Drawer com avatar
 
-│   ├── photo_selection_bottom_sheet.dart # Seleção de fotos
+│   ├── photo_selection_bottom_sheet.dart     # Seleção de fotos
 
-│   ├── onboarding_page.dart   # Páginas de onboarding
+│   ├── onboarding_page.dart                  # Páginas de onboarding
 
-│   └── dots_indicator.dart    # Indicador de progresso
+│   └── dots_indicator.dart                   # Indicador de progresso
 
 ├── theme/
 
-│   └── app_theme.dart         # Temas claro/escuro
+│   └── app_theme.dart             # Temas claro/escuro
 
-└── main.dart                  # Inicialização do app
+└── main.dart                      # Inicialização do app
 
 ## 🔒 Segurança e Privacidade
 * Variáveis de ambiente para credenciais sensíveis
@@ -109,7 +109,7 @@ flutter test
 ### ✅ Onboarding → Políticas → Aceite → Home con Drawer
 ### ✅ Adicionar/remover foto de perfil
 ### ✅ Carregamento de provedores online/offline
-### ✅ Sincronización automática
+### ✅ Sincronização automática
 ### ✅ Acessibilidade e performance
 
 ## 📄 Licença
