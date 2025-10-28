@@ -2,7 +2,7 @@
 
 EcoSteps é um aplicativo Flutter desenvolvido para ajudar usuários a desenvolver e monitorar hábitos sustentáveis. Com foco em metas de redução de lixo, uso de água e energia, o app oferece um onboarding intuitivo, consentimento de privacidade em conformidade com a LGPD, e uma experiência transparente e acessível.
 
-**Novo:** Integração com Supabase para dados em tempo real + Avatar dinâmico no Drawer com foto do usuário (câmera/galeria/desktop), compressão automática ≤200KB, remoção de EXIF/GPS e fallback para iniciais.
+** 🆕 Novo:** Integração com Supabase para dados em tempo real + Avatar dinâmico no Drawer com foto do usuário (câmera/galeria/desktop), compressão automática ≤200KB, remoção de EXIF/GPS e fallback para iniciais.
 
 ## 🚀 Funcionalidades Principais
 
