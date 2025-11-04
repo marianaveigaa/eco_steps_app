@@ -42,6 +42,7 @@ EcoSteps é um aplicativo Flutter que ajuda usuários a desenvolver hábitos sus
 flutter run          # Desenvolvimento
 flutter build apk    # Build Android
 flutter test         # Testes
+```bash
 
 ## 📱 **Experiência**
 
