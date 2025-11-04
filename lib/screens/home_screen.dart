@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/prefs_service.dart';
 import '../services/supabase_repository.dart';
 import '../services/local_cache_service.dart';
-import '../models/provider.dart';
+import '../domain/entities/eco_provider.dart';
 import '../widgets/profile_drawer.dart';
 import 'splash_screen.dart';
 
@@ -34,7 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
         _hasError = false;
       });
 
-      // Primeiro carrega do cache para mostrar rápido
       final cachedProviders = await _cacheService.getCachedProviders();
       if (cachedProviders.isNotEmpty && mounted) {
         setState(() {
@@ -42,7 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
 
-      // Depois tenta sincronizar com o Supabase
       final lastSync = await _cacheService.getLastSync();
       final freshProviders = await _repository.getProviders(since: lastSync);
 
@@ -163,11 +161,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       drawer: const ProfileDrawer(),
-      body: _buildBody(), // CORREÇÃO: Método separado
+      body: _buildBody(),
     );
   }
 
-  // CORREÇÃO: Método separado para o body
   Widget _buildBody() {
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());

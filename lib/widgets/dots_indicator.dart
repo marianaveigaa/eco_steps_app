@@ -22,7 +22,7 @@ class DotsIndicator extends StatelessWidget {
               shape: BoxShape.circle,
               color: isActive
                   ? Theme.of(context).colorScheme.primary
-                  : Colors.grey.shade400, // Alternativa sem withOpacity
+                  : Colors.grey.shade400,
             ),
           );
         },

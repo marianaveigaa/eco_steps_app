@@ -4,14 +4,14 @@ class OnboardingPage extends StatelessWidget {
   final String title;
   final String description;
   final bool showSkip;
-  final IconData icon; // Novo parâmetro para ícone personalizado
+  final IconData icon;
 
   const OnboardingPage({
     super.key,
     required this.title,
     required this.description,
     required this.showSkip,
-    required this.icon, // Ícone passado dinamicamente
+    required this.icon,
   });
 
   @override
@@ -24,9 +24,7 @@ class OnboardingPage extends StatelessWidget {
           Icon(
             icon,
             size: 100,
-            color: Theme.of(context)
-                .colorScheme
-                .primary, // Usa a cor primária (Green)
+            color: Theme.of(context).colorScheme.primary,
           ),
           const SizedBox(height: 40),
           Text(

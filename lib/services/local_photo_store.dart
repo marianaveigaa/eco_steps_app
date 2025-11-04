@@ -10,7 +10,6 @@ class LocalPhotoStore {
     final filePath = '${dir.path}/$fileName';
 
     try {
-      // Tentar comprimir a imagem
       final compressedFile = await FlutterImageCompress.compressAndGetFile(
         photoFile.path,
         filePath,
@@ -20,12 +19,10 @@ class LocalPhotoStore {
       if (compressedFile != null) {
         return compressedFile.path;
       } else {
-        // Se compressão falhar, copiar arquivo original
         final copiedFile = await photoFile.copy(filePath);
         return copiedFile.path;
       }
     } catch (e) {
-      // Último fallback - copiar original
       final copiedFile = await photoFile.copy(filePath);
       return copiedFile.path;
     }

@@ -7,7 +7,6 @@ class PrefsService {
     _prefs = await SharedPreferences.getInstance();
   }
 
-  // Métodos existentes (mantenha)...
   static bool isPolicyAccepted(String version) {
     return _prefs.getString('policies_version_accepted') == version;
   }
@@ -38,7 +37,6 @@ class PrefsService {
   static bool get tipsEnabled => _prefs.getBool('tips_enabled') ?? true;
   static set tipsEnabled(bool value) => _prefs.setBool('tips_enabled', value);
 
-  // Novos métodos para foto (adaptados do PRD)
   static String? get userPhotoPath => _prefs.getString('userPhotoPath');
   static set userPhotoPath(String? value) =>
       _prefs.setString('userPhotoPath', value ?? '');

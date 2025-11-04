@@ -42,7 +42,6 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Use um placeholder se o ícone não existir
             Icon(
               Icons.eco,
               size: 150,

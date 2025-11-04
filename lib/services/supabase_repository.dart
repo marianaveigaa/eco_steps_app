@@ -1,6 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../models/provider.dart';
+import 'package:flutter/foundation.dart';
+import '../data/dtos/eco_provider_dto.dart';
+import '../data/mappers/eco_provider_mapper.dart';
+import '../domain/entities/eco_provider.dart';
 
 class SupabaseRepository {
   final SupabaseClient _supabase;
@@ -10,31 +12,35 @@ class SupabaseRepository {
   // Buscar todos os providers (com sincronização incremental)
   Future<List<EcoProvider>> getProviders({DateTime? since}) async {
     try {
-      // Método CORRETO para filtrar datas
+      dynamic query;
+
       if (since != null) {
-        final response = await _supabase
+        // Com filtro de data - usar tipo dinâmico para evitar conflito
+        query = _supabase
             .from('providers')
             .select()
             .gte('updated_at', since.toIso8601String())
             .order('updated_at', ascending: false);
-
-        return (response as List)
-            .map((json) => EcoProvider.fromJson(json))
-            .toList();
       } else {
-        // Sem filtro de data
-        final response = await _supabase
+        // Sem filtro
+        query = _supabase
             .from('providers')
             .select()
             .order('updated_at', ascending: false);
-
-        return (response as List)
-            .map((json) => EcoProvider.fromJson(json))
-            .toList();
       }
+
+      final response = await query;
+
+      // Converter para lista de EcoProvider
+      return (response as List).map((json) {
+        final dto = EcoProviderDto.fromMap(Map<String, dynamic>.from(json));
+        return EcoProviderMapper.toEntity(dto);
+      }).toList();
     } catch (e) {
-      debugPrint('Erro ao buscar providers: $e');
-      throw Exception('Falha ao carregar dados');
+      if (kDebugMode) {
+        print('Erro ao buscar providers: $e');
+      }
+      throw Exception('Falha ao carregar dados: $e');
     }
   }
 
@@ -44,9 +50,12 @@ class SupabaseRepository {
       final response =
           await _supabase.from('providers').select().eq('id', id).single();
 
-      return EcoProvider.fromJson(response);
+      final dto = EcoProviderDto.fromMap(Map<String, dynamic>.from(response));
+      return EcoProviderMapper.toEntity(dto);
     } catch (e) {
-      debugPrint('Erro ao buscar provider $id: $e');
+      if (kDebugMode) {
+        print('Erro ao buscar provider $id: $e');
+      }
       return null;
     }
   }
@@ -62,8 +71,10 @@ class SupabaseRepository {
 
       return response.isNotEmpty;
     } catch (e) {
-      debugPrint('Erro ao verificar atualizações: $e');
-      return true; // Assume que há atualizações em caso de erro
+      if (kDebugMode) {
+        print('Erro ao verificar atualizações: $e');
+      }
+      return true;
     }
   }
 }
