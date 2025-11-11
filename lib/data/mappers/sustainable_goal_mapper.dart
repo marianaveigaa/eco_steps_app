@@ -16,4 +16,22 @@ class SustainableGoalMapper {
       updatedAt: DateTime.parse(dto.updatedAt),
     );
   }
+
+  // --- ADICIONAR ESTE MÉTODO ---
+  /// Converte a Entidade (do app) para um DTO (para o Supabase/cache)
+  static SustainableGoalDto toDto(SustainableGoal entity) {
+    return SustainableGoalDto(
+      id: entity.id,
+      title: entity.title,
+      description: entity.description,
+      category: entity.category,
+      targetValue: entity.targetValue,
+      currentValue: entity.currentValue,
+      unit: entity.unit,
+      deadline: entity.deadline.toIso8601String(),
+      completed: entity.completed,
+      // O updatedAt deve ser atualizado no momento de salvar
+      updatedAt: entity.updatedAt.toIso8601String(),
+    );
+  }
 }

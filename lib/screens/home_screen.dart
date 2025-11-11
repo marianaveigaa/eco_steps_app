@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
-import '../services/prefs_service.dart';
-import '../services/supabase_repository.dart';
-import '../services/local_cache_service.dart';
-import '../domain/entities/eco_provider.dart';
-import '../widgets/profile_drawer.dart';
-import 'splash_screen.dart';
+// Imports corrigidos para usar o caminho do pacote
+import 'package:ecosteps/services/prefs_service.dart';
+import 'package:ecosteps/services/supabase_repository.dart';
+import 'package:ecosteps/services/local_cache_service.dart';
+import 'package:ecosteps/domain/entities/eco_provider.dart';
+import 'package:ecosteps/widgets/profile_drawer.dart';
+import 'package:ecosteps/screens/splash_screen.dart';
+
+// --- ESTA É A IMPORTAÇÃO QUE FALTAVA ---
+import 'package:ecosteps/screens/sustainable_goal_list_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -119,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // CORREÇÃO: Método separado para construir cards
+  // Método separado para construir cards
   Widget _buildProviderCard(EcoProvider provider) {
     final distanceText =
         provider.distanceKm != null ? '${provider.distanceKm} km' : 'N/A';
@@ -135,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Icon(Icons.eco),
               ),
         title: Text(provider.name),
-        subtitle: Text('⭐ ${provider.rating} • $distanceText'), // CORREÇÃO AQUI
+        subtitle: Text('⭐ ${provider.rating} • $distanceText'),
         trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () => _showComingSoon(context),
       ),
@@ -210,8 +214,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 20),
+
+                    // ===========================================
+                    // AQUI ESTÁ A CORREÇÃO (NO LUGAR CERTO)
+                    // ===========================================
                     ElevatedButton(
-                      onPressed: () => _showComingSoon(context),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const SustainableGoalListPage(),
+                          ),
+                        );
+                      },
                       child: const Text('Criar Meta'),
                     ),
                   ],

@@ -1,37 +1,29 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/foundation.dart';
-import '../data/dtos/eco_provider_dto.dart';
-import '../data/mappers/eco_provider_mapper.dart';
-import '../domain/entities/eco_provider.dart';
+import 'package:ecosteps/data/dtos/eco_provider_dto.dart';
+import 'package:ecosteps/data/dtos/sustainable_goal_dto.dart';
+import 'package:ecosteps/data/mappers/eco_provider_mapper.dart';
+import 'package:ecosteps/domain/entities/eco_provider.dart';
+import 'package:ecosteps/domain/repositories/i_goal_datasources.dart';
 
-class SupabaseRepository {
+class SupabaseRepository implements ISustainableGoalRemoteDatasource {
   final SupabaseClient _supabase;
+
+  static const String _providerTable = 'providers';
+  static const String _goalTable = 'sustainable_goals';
 
   SupabaseRepository() : _supabase = Supabase.instance.client;
 
-  // Buscar todos os providers (com sincronização incremental)
+  // --- Lógica de EcoProvider (Existente) ---
   Future<List<EcoProvider>> getProviders({DateTime? since}) async {
     try {
-      dynamic query;
-
+      dynamic query = _supabase.from(_providerTable).select();
       if (since != null) {
-        // Com filtro de data - usar tipo dinâmico para evitar conflito
-        query = _supabase
-            .from('providers')
-            .select()
-            .gte('updated_at', since.toIso8601String())
-            .order('updated_at', ascending: false);
+        query = query.gte('updated_at', since.toIso8601String());
       } else {
-        // Sem filtro
-        query = _supabase
-            .from('providers')
-            .select()
-            .order('updated_at', ascending: false);
+        query = query.order('updated_at', ascending: false);
       }
-
       final response = await query;
-
-      // Converter para lista de EcoProvider
       return (response as List).map((json) {
         final dto = EcoProviderDto.fromMap(Map<String, dynamic>.from(json));
         return EcoProviderMapper.toEntity(dto);
@@ -44,37 +36,69 @@ class SupabaseRepository {
     }
   }
 
-  // Buscar provider por ID
-  Future<EcoProvider?> getProviderById(int id) async {
-    try {
-      final response =
-          await _supabase.from('providers').select().eq('id', id).single();
-
-      final dto = EcoProviderDto.fromMap(Map<String, dynamic>.from(response));
-      return EcoProviderMapper.toEntity(dto);
-    } catch (e) {
-      if (kDebugMode) {
-        print('Erro ao buscar provider $id: $e');
-      }
-      return null;
-    }
-  }
-
-  // Verificar se há atualizações
   Future<bool> hasUpdatesSince(DateTime lastSync) async {
     try {
       final response = await _supabase
-          .from('providers')
+          .from(_providerTable)
           .select()
           .gte('updated_at', lastSync.toIso8601String())
           .limit(1);
-
       return response.isNotEmpty;
     } catch (e) {
       if (kDebugMode) {
         print('Erro ao verificar atualizações: $e');
       }
       return true;
+    }
+  }
+
+  // --- LÓGICA DE SUSTAINABLE GOAL (Implementação do Contrato) ---
+
+  @override
+  Future<List<SustainableGoalDto>> getGoalsSince(DateTime? lastSync) async {
+    try {
+      dynamic query = _supabase.from(_goalTable).select();
+      if (lastSync != null) {
+        query = query.gte('updated_at', lastSync.toIso8601String());
+      }
+      final response = await query.order('updated_at', ascending: false);
+      return (response as List).map((json) {
+        return SustainableGoalDto.fromMap(Map<String, dynamic>.from(json));
+      }).toList();
+    } catch (e) {
+      if (kDebugMode) {
+        print('Erro ao buscar metas: $e');
+      }
+      throw Exception('Falha ao carregar metas: $e');
+    }
+  }
+
+  @override
+  Future<SustainableGoalDto> saveGoal(SustainableGoalDto dto) async {
+    try {
+      final response = await _supabase
+          .from(_goalTable)
+          .upsert(dto.toMap()) // Upsert cuida de 'criar' e 'atualizar'
+          .select()
+          .single();
+      return SustainableGoalDto.fromMap(Map<String, dynamic>.from(response));
+    } catch (e) {
+      if (kDebugMode) {
+        print('Erro ao salvar meta: $e');
+      }
+      throw Exception('Falha ao salvar meta: $e');
+    }
+  }
+
+  @override
+  Future<void> deleteGoal(int id) async {
+    try {
+      await _supabase.from(_goalTable).delete().eq('id', id);
+    } catch (e) {
+      if (kDebugMode) {
+        print('Erro ao deletar meta: $e');
+      }
+      throw Exception('Falha ao deletar meta: $e');
     }
   }
 }
