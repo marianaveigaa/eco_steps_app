@@ -5,29 +5,29 @@ EcoSteps é um aplicativo Flutter desenvolvido para ajudar usuários a criar e m
 ## 🚀 Funcionalidades Principais
 
 ### **Sustentabilidade Prática**
-- **Metas Personalizáveis**: Defina objetivos para reduzir lixo, economizar água e energia
-- **Provedores Verdes**: Descubra estabelecimentos sustentáveis próximos
-- **Atividades Eco**: Registre ações com impacto ambiental mensurável
-- **Progresso Visual**: Acompanhe sua evolução com gráficos e estatísticas
+- **Metas Personalizáveis**: CRUD completo de metas (reduzir lixo, economizar água, etc.) com persistência local e na nuvem.
+- **Provedores Verdes**: Descubra estabelecimentos sustentáveis (com cache offline).
+- **Atividades Eco**: Registre ações com impacto ambiental mensurável (Backlog).
+- **Progresso Visual**: Acompanhe sua evolução com gráficos e estatísticas.
 
 ### **Tecnologia Avançada**
-- **Arquitetura Entity/DTO**: Separação clara entre dados e interface
-- **Sincronização em Tempo Real**: Dados atualizados via Supabase
-- **Funcionalidade Offline**: Use o app mesmo sem internet
-- **Cache Inteligente**: Otimização de performance
+- **Arquitetura Limpa (Padrão Repository)**: Separação clara entre UI, Domínio (interfaces) e Dados (implementações).
+- **Sincronização em Tempo Real**: Dados atualizados via Supabase (PostgreSQL e Storage).
+- **Funcionalidade Offline-First**: O app prioriza o cache local (`SharedPreferences`) e sincroniza com a nuvem, funcionando perfeitamente sem internet.
+- **Validação Inline**: Experiência de usuário aprimorada com validação de formulário em tempo real.
 
 ### **Experiência do Usuário**
-- **Onboarding Intuitivo**: Introdução suave às funcionalidades
-- **Avatar Personalizável**: Foto de perfil com upload simplificado
-- **Multi-plataforma**: Disponível para mobile e desktop
-- **Acessibilidade Total**: Design inclusivo e acessível
+- **Onboarding Intuitivo**: Introdução suave às funcionalidades e políticas de privacidade.
+- **Avatar Personalizável**: Foto de perfil com upload local, compressão e respeito à LGPD.
+- **Multi-plataforma**: Disponível para mobile e desktop.
+- **Acessibilidade Total**: Design inclusivo e acessível.
 
 ## 🛠️ Stack Tecnológica
 
 **Frontend & Mobile**
 - Flutter 3.0+ & Dart
 - Material Design 3
-- Arquitetura Clean Architecture
+- Arquitetura Limpa (Domain/Data/Repository)
 
 **Backend & Cloud**
 - Supabase (PostgreSQL, Auth, Storage)
@@ -35,20 +35,20 @@ EcoSteps é um aplicativo Flutter desenvolvido para ajudar usuários a criar e m
 - Row Level Security
 
 **Ferramentas**
-- Gestão de estado com Provider
+- Gestão de estado nativa (StatefulWidgets)
 - Cache local com SharedPreferences
-- Testes unitários e de integração
+- Testes unitários com `mocktail`
 
 ## ⚡ Começando
 
 ### Pré-requisitos
 - Flutter 3.0 ou superior
-- Conta no Supabase
+- Conta no Supabase (com as tabelas `providers` e `sustainable_goals` criadas)
 - Git instalado
 
 ### Instalação Rápida
 1. Clone o repositório
-2. Configure as variáveis de ambiente no arquivo `.env`
+2. Configure as variáveis de ambiente no arquivo `.env` (baseado no `.env.example`)
 3. Execute `flutter pub get` para instalar dependências
 4. Rode `flutter run` para iniciar o app
 
@@ -61,30 +61,38 @@ flutter analyze      # Análise de código
 ## 📱 Como Utilizar
 
 ### **Primeiro Acesso**
-- Complete o onboarding para entender as funcionalidades
-- Aceite as políticas de privacidade  
-- Configure suas primeiras metas sustentáveis
+- Complete o onboarding para entender as funcionalidades.
+- Aceite as políticas de privacidade para ter acesso ao app.
 
 ### **Funcionalidades Diárias**
-- Adicione atividades eco no seu dia a dia
-- Acompanhe provedores sustentáveis na sua região
-- Atualize seu progresso nas metas
-- Personalize seu perfil com foto
+- **Gerenciar Metas:** Use o botão "MINHAS METAS" para criar, editar ou excluir suas metas sustentáveis. O app salvará seu progresso mesmo se você estiver offline.
+- **Explorar Provedores:** Acompanhe provedores sustentáveis na sua região.
+- **Personalizar Perfil:** Adicione uma foto de perfil, que fica salva apenas no seu dispositivo.
 
 ### **Recursos Avançados**
-- Sincronização automática entre dispositivos
-- Modo offline com todos os dados essenciais
-- Sistema de notificações para lembretes
-- Exportação de relatórios de progresso
+- Sincronização automática entre dispositivos (via Supabase).
+- Modo offline com todos os dados essenciais (cache de metas e provedores).
+- Sistema de notificações para lembretes (Backlog).
 
 ## 🏗️ Estrutura do Projeto
 
-O projeto segue princípios de Clean Architecture com:
+O projeto segue princípios de Clean Architecture com o Padrão Repository:
 
-- `domain/`: Entidades e regras de negócio
-- `data/`: Fontes de dados e DTOs  
-- `presentation/`: Interface do usuário
-- `services/`: Lógica de aplicação
+- `lib/domain/`: Contém a lógica de negócio pura.
+  - `entities/`: Os modelos de negócio (ex: `SustainableGoal`, `EcoProvider`).
+  - `repositories/`: As **interfaces** (contratos) que a UI usa (ex: `ISustainableGoalRepository`).
+
+- `lib/data/`: Contém a implementação das fontes de dados.
+  - `dtos/`: Objetos de transferência de dados (Ex: `SustainableGoalDto`).
+  - `mappers/`: Conversores que transformam DTOs em Entidades.
+  - `repositories/`: A **implementação** concreta das interfaces (Ex: `SustainableGoalRepository`).
+
+- `lib/services/`: Contém os DataSources (os "trabalhadores" que falam com o exterior).
+  - `supabase_repository.dart`: (Implementa `ISustainableGoalRemoteDatasource`) Fala com o Supabase.
+  - `local_cache_service.dart`: (Implementa `ISustainableGoalLocalDatasource`) Fala com o SharedPreferences.
+
+- `lib/screens/` (Presentation): As telas/páginas do app (ex: `HomeScreen`, `SustainableGoalListPage`).
+- `lib/widgets/` (Presentation): Widgets reutilizáveis (ex: `ProfileDrawer`, `SustainableGoalFormDialog`).
 
 ## 🤝 Contribuindo
 
@@ -104,13 +112,13 @@ Quer ajudar a melhorar o EcoSteps?
 
 ## 📄 Licença
 
-Este projeto está sob licença MIT. 
+Este projeto está sob licença MIT.
 
 ## 📞 Contato & Suporte
 
 **Desenvolvedora**: Mariana Veiga  
-**Email**: suporte@ecosteps.com  
-**Documentação**: [Wiki do Projeto](https://github.com/seu-usuario/ecosteps/wiki)
+**Email**: suporte@ecosteps.com (ficticio)
+**Documentação**: (Link para o `docs/apresentacao.md`)
 
 ---
 
