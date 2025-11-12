@@ -7,13 +7,13 @@ import 'package:ecosteps/domain/repositories/i_sustainable_goal_repository.dart'
 Future<SustainableGoal?> showSustainableGoalFormDialog(
   BuildContext context, {
   SustainableGoal? initial,
-  required ISustainableGoalRepository repository, // Recebe o repositório
+  required ISustainableGoalRepository repository,
 }) {
   return showDialog<SustainableGoal>(
     context: context,
     builder: (ctx) => _SustainableGoalFormDialog(
       initial: initial,
-      repository: repository, // Passa para o widget
+      repository: repository,
     ),
   );
 }
@@ -34,7 +34,7 @@ class _SustainableGoalFormDialog extends StatefulWidget {
 
 class _SustainableGoalFormDialogState
     extends State<_SustainableGoalFormDialog> {
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>(); // <-- Chave para validar o Form
 
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
@@ -110,26 +110,12 @@ class _SustainableGoalFormDialogState
   }
 
   Future<void> _onConfirm() async {
-    if (_titleController.text.trim().isEmpty) {
-      _showError('Título é obrigatório.');
-      return;
-    }
-    if (_targetValueController.text.trim().isEmpty) {
-      _showError('Valor alvo é obrigatório.');
-      return;
-    }
-    final targetValue = double.tryParse(_targetValueController.text.trim());
-    if (targetValue == null || targetValue <= 0) {
-      _showError('Valor alvo deve ser um número maior que 0.');
-      return;
-    }
-    final currentValue =
-        double.tryParse(_currentValueController.text.trim()) ?? 0.0;
-    if (currentValue < 0) {
-      _showError('Valor atual deve ser >= 0.');
-      return;
+    // 1. Ativa a validação
+    if (!_formKey.currentState!.validate()) {
+      return; // Se houver erros, não faz nada
     }
 
+    // Se passou na validação, continua
     setState(() {
       _isLoading = true;
     });
@@ -137,10 +123,11 @@ class _SustainableGoalFormDialogState
     final date = _selectedDate ?? DateTime.now();
     final now = DateTime.now();
 
+    final targetValue = double.parse(_targetValueController.text.trim());
+    final currentValue =
+        double.tryParse(_currentValueController.text.trim()) ?? 0.0;
+
     final goal = SustainableGoal(
-      // Se for edição, usa o ID existente.
-      // Se for criação, mandamos 0 e o Supabase (com a config certa)
-      // vai criar um novo ID.
       id: widget.initial?.id ?? 0,
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
@@ -155,12 +142,11 @@ class _SustainableGoalFormDialogState
 
     try {
       await widget.repository.saveGoal(goal);
-
       if (mounted) {
         Navigator.of(context).pop(goal);
       }
     } catch (e) {
-      _showError('Erro ao salvar: $e');
+      _showError('Erro ao salvar: $e'); // Mostra erro de rede/servidor
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -176,6 +162,8 @@ class _SustainableGoalFormDialogState
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
+          // Valida automaticamente quando o usuário interage
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: _isLoading
               ? const Padding(
                   padding: EdgeInsets.all(32.0),
@@ -188,6 +176,12 @@ class _SustainableGoalFormDialogState
                       controller: _titleController,
                       decoration: const InputDecoration(labelText: 'Título'),
                       textInputAction: TextInputAction.next,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Título é obrigatório.';
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
@@ -230,6 +224,20 @@ class _SustainableGoalFormDialogState
                                 const InputDecoration(labelText: 'Valor Alvo'),
                             keyboardType: TextInputType.number,
                             textInputAction: TextInputAction.next,
+                            // --- MUDANÇA DA FEATURE 2 ---
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return 'Obrigatório';
+                              }
+                              final val = double.tryParse(value);
+                              if (val == null) {
+                                return 'Inválido';
+                              }
+                              if (val <= 0) {
+                                return '> 0';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -239,6 +247,13 @@ class _SustainableGoalFormDialogState
                             decoration: const InputDecoration(
                                 labelText: 'Unidade (ex: kg, L)'),
                             textInputAction: TextInputAction.next,
+                            // --- MUDANÇA DA FEATURE 2 ---
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return 'Obrigatório';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                       ],
@@ -250,6 +265,19 @@ class _SustainableGoalFormDialogState
                           const InputDecoration(labelText: 'Valor Atual'),
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.done,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Obrigatório (pode ser 0)';
+                        }
+                        final val = double.tryParse(value);
+                        if (val == null) {
+                          return 'Inválido';
+                        }
+                        if (val < 0) {
+                          return '>= 0';
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 8),
                     Row(

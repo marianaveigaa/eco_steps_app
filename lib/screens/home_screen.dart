@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-// Imports corrigidos para usar o caminho do pacote
 import 'package:ecosteps/services/prefs_service.dart';
 import 'package:ecosteps/services/supabase_repository.dart';
 import 'package:ecosteps/services/local_cache_service.dart';
 import 'package:ecosteps/domain/entities/eco_provider.dart';
 import 'package:ecosteps/widgets/profile_drawer.dart';
 import 'package:ecosteps/screens/splash_screen.dart';
-
-// --- ESTA É A IMPORTAÇÃO QUE FALTAVA ---
 import 'package:ecosteps/screens/sustainable_goal_list_page.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -97,14 +94,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (context.mounted) {
       Navigator.pop(context);
-
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Consentimento revogado. Redirecionando...'),
           duration: Duration(seconds: 2),
         ),
       );
-
       Future.delayed(const Duration(seconds: 2), () {
         if (context.mounted) {
           Navigator.pushAndRemoveUntil(
@@ -123,7 +118,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Método separado para construir cards
+  // Em: lib/screens/home_screen.dart
+
   Widget _buildProviderCard(EcoProvider provider) {
     final distanceText =
         provider.distanceKm != null ? '${provider.distanceKm} km' : 'N/A';
@@ -131,12 +127,26 @@ class _HomeScreenState extends State<HomeScreen> {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: ListTile(
-        leading: provider.imageUrl != null
+        leading: provider.imageUrl != null && provider.imageUrl!.isNotEmpty
+            // SE TIVER IMAGEM (ex: "http://..."), tenta carregar
             ? CircleAvatar(
                 backgroundImage: NetworkImage(provider.imageUrl!),
+                // Cor de fundo enquanto a imagem carrega
+                backgroundColor:
+                    Theme.of(context).colorScheme.secondaryContainer,
               )
-            : const CircleAvatar(
-                child: Icon(Icons.eco),
+            // SE NÃO TIVER IMAGEM (null ou ""), MOSTRA O ÍCONE DE FALLBACK
+            : CircleAvatar(
+                // 1. Define uma cor de fundo (ex: um cinza claro ou verde claro)
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+
+                // 2. Define o ícone
+                child: Icon(
+                  Icons.storefront,
+
+                  // 3. Define uma cor para o ícone que contrasta com o fundo
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                ),
               ),
         title: Text(provider.name),
         subtitle: Text('⭐ ${provider.rating} • $distanceText'),
@@ -166,6 +176,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       drawer: const ProfileDrawer(),
       body: _buildBody(),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const SustainableGoalListPage()),
+          );
+        },
+        label: const Text('MINHAS METAS'),
+        icon: const Icon(Icons.track_changes),
+      ),
     );
   }
 
@@ -214,10 +234,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 20),
-
-                    // ===========================================
-                    // AQUI ESTÁ A CORREÇÃO (NO LUGAR CERTO)
-                    // ===========================================
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(

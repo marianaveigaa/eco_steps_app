@@ -1,5 +1,5 @@
-import '../dtos/sustainable_goal_dto.dart';
-import '../../domain/entities/sustainable_goal.dart';
+import 'package:ecosteps/data/dtos/sustainable_goal_dto.dart';
+import 'package:ecosteps/domain/entities/sustainable_goal.dart';
 
 class SustainableGoalMapper {
   static SustainableGoal toEntity(SustainableGoalDto dto) {
@@ -17,8 +17,6 @@ class SustainableGoalMapper {
     );
   }
 
-  // --- ADICIONAR ESTE MÉTODO ---
-  /// Converte a Entidade (do app) para um DTO (para o Supabase/cache)
   static SustainableGoalDto toDto(SustainableGoal entity) {
     return SustainableGoalDto(
       id: entity.id,
@@ -30,7 +28,6 @@ class SustainableGoalMapper {
       unit: entity.unit,
       deadline: entity.deadline.toIso8601String(),
       completed: entity.completed,
-      // O updatedAt deve ser atualizado no momento de salvar
       updatedAt: entity.updatedAt.toIso8601String(),
     );
   }

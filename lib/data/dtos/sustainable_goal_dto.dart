@@ -49,4 +49,30 @@ class SustainableGoalDto {
         'completed': completed,
         'updated_at': updatedAt,
       };
+
+  SustainableGoalDto copyWith({
+    int? id,
+    String? title,
+    String? description,
+    String? category,
+    double? targetValue,
+    double? currentValue,
+    String? unit,
+    String? deadline,
+    bool? completed,
+    String? updatedAt,
+  }) {
+    return SustainableGoalDto(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      category: category ?? this.category,
+      targetValue: targetValue ?? this.targetValue,
+      currentValue: currentValue ?? this.currentValue,
+      unit: unit ?? this.unit,
+      deadline: deadline ?? this.deadline,
+      completed: completed ?? this.completed,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }

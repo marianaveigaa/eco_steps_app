@@ -49,7 +49,7 @@ class LocalCacheService implements ISustainableGoalLocalDatasource {
         return EcoProviderMapper.toEntity(dto);
       }).toList();
     } catch (e) {
-      debugPrint('Erro ao recuperar cache de providers: $e');
+      debugPrint('Erro ao recuperar cache: $e');
       return [];
     }
   }
@@ -66,8 +66,6 @@ class LocalCacheService implements ISustainableGoalLocalDatasource {
     await prefs.remove(_lastSyncKey);
     await clearGoals();
   }
-
-  // --- LÓGICA DE SUSTAINABLE GOAL (Implementação do Contrato) ---
 
   @override
   Future<void> cacheGoals(List<SustainableGoalDto> dtos) async {

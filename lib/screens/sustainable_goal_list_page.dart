@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// --- IMPORTAÇÕES CORRIGIDAS ---
 import 'package:ecosteps/domain/entities/sustainable_goal.dart';
 import 'package:ecosteps/domain/repositories/i_sustainable_goal_repository.dart';
 import 'package:ecosteps/data/repositories/sustainable_goal_repository.dart';
@@ -7,7 +6,6 @@ import 'package:ecosteps/services/local_cache_service.dart';
 import 'package:ecosteps/services/supabase_repository.dart';
 import 'package:ecosteps/widgets/sustainable_goal_form_dialog.dart';
 import 'package:ecosteps/domain/entities/sustainable_category.dart';
-// --- FIM DAS IMPORTAÇÕES ---
 
 class SustainableGoalListPage extends StatefulWidget {
   const SustainableGoalListPage({super.key});
@@ -30,7 +28,6 @@ class _SustainableGoalListPageState extends State<SustainableGoalListPage>
   @override
   void initState() {
     super.initState();
-
     _repository = SustainableGoalRepository(
       remote: SupabaseRepository(),
       local: LocalCacheService(),
@@ -220,7 +217,6 @@ class _SustainableGoalListPageState extends State<SustainableGoalListPage>
           );
         }
 
-        // Lista de Metas
         return ListView.separated(
           itemCount: items.length,
           separatorBuilder: (_, __) => const Divider(height: 1),
@@ -250,7 +246,7 @@ class _SustainableGoalListPageState extends State<SustainableGoalListPage>
                   ),
                 ],
               ),
-              onTap: () => _openGoalForm(goal), // Abre em modo de edição
+              onTap: () => _openGoalForm(goal),
             );
           },
         );

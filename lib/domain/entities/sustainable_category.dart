@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// Este enum representa as categorias de metas, como visto no PDF
 enum SustainableCategory {
   lixo,
   agua,
@@ -8,7 +7,6 @@ enum SustainableCategory {
   transporte,
 }
 
-// Extensão para dar ao enum propriedades (ícone e descrição)
 extension SustainableCategoryDetails on SustainableCategory {
   String get description {
     switch (this) {

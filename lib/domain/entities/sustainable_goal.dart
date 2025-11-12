@@ -25,4 +25,30 @@ class SustainableGoal {
 
   double get progress => (currentValue / targetValue).clamp(0.0, 1.0);
   String get progressText => '${(progress * 100).toStringAsFixed(0)}%';
+
+  SustainableGoal copyWith({
+    int? id,
+    String? title,
+    String? description,
+    String? category,
+    double? targetValue,
+    double? currentValue,
+    String? unit,
+    DateTime? deadline,
+    bool? completed,
+    DateTime? updatedAt,
+  }) {
+    return SustainableGoal(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      category: category ?? this.category,
+      targetValue: targetValue ?? this.targetValue,
+      currentValue: currentValue ?? this.currentValue,
+      unit: unit ?? this.unit,
+      deadline: deadline ?? this.deadline,
+      completed: completed ?? this.completed,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }
