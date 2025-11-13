@@ -1,4 +1,4 @@
-# EcoSteps - Hábitos Sustentáveis
+# 🪴 EcoSteps - Hábitos Sustentáveis 🪴
 
 EcoSteps é um aplicativo Flutter desenvolvido para ajudar usuários a criar e monitorar hábitos sustentáveis. Com arquitetura moderna e experiência offline-first, o app combina tecnologia e conscientização ambiental.
 
@@ -19,7 +19,7 @@ EcoSteps é um aplicativo Flutter desenvolvido para ajudar usuários a criar e m
 ### **Experiência do Usuário**
 - **Onboarding Intuitivo**: Introdução suave às funcionalidades e políticas de privacidade.
 - **Avatar Personalizável**: Foto de perfil com upload local, compressão e respeito à LGPD.
-- **Multi-plataforma**: Disponível para mobile e desktop.
+- **Multi-plataforma**: Disponível para mobile (android) e desktop (windows).
 - **Acessibilidade Total**: Design inclusivo e acessível.
 
 ## 🛠️ Stack Tecnológica
@@ -44,7 +44,7 @@ EcoSteps é um aplicativo Flutter desenvolvido para ajudar usuários a criar e m
 ### Pré-requisitos
 - Flutter 3.0 ou superior
 - Conta no Supabase (com as tabelas `providers` e `sustainable_goals` criadas)
-- Git instalado
+- Git e GitHub Desktop instalado
 
 ### Instalação Rápida
 1. Clone o repositório
@@ -62,7 +62,7 @@ flutter analyze      # Análise de código
 
 ### **Primeiro Acesso**
 - Complete o onboarding para entender as funcionalidades.
-- Aceite as políticas de privacidade para ter acesso ao app.
+- Leia e aceite as políticas de privacidade para ter acesso ao app.
 
 ### **Funcionalidades Diárias**
 - **Gerenciar Metas:** Use o botão "MINHAS METAS" para criar, editar ou excluir suas metas sustentáveis. O app salvará seu progresso mesmo se você estiver offline.
@@ -118,7 +118,7 @@ Este projeto está sob licença MIT.
 
 **Desenvolvedora**: Mariana Veiga  
 **Email**: suporte@ecosteps.com (ficticio)
-**Documentação**: (Link para o `docs/apresentacao.md`)
+**Documentação**: `docs/apresentacao.md`
 
 ---
 
