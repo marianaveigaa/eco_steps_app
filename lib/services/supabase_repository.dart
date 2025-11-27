@@ -14,7 +14,7 @@ class SupabaseRepository implements ISustainableGoalRemoteDatasource {
 
   SupabaseRepository() : _supabase = Supabase.instance.client;
 
-  // --- Lógica de EcoProvider (Existente) ---
+  // --- Lógica de EcoProvider (Existente) --- //
   Future<List<EcoProvider>> getProviders({DateTime? since}) async {
     try {
       dynamic query = _supabase.from(_providerTable).select();
@@ -52,7 +52,7 @@ class SupabaseRepository implements ISustainableGoalRemoteDatasource {
     }
   }
 
-  // --- LÓGICA DE SUSTAINABLE GOAL (Implementação do Contrato) ---
+  // --- LÓGICA DE SUSTAINABLE GOAL (Implementação do Contrato) --- //
 
   @override
   Future<List<SustainableGoalDto>> getGoalsSince(DateTime? lastSync) async {
