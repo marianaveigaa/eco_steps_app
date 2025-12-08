@@ -1,26 +1,26 @@
-# 🪴 EcoSteps - Hábitos Sustentáveis 🪴
+# 🌱 EcoSteps - Hábitos Sustentáveis 🌱
 
 EcoSteps é um aplicativo Flutter desenvolvido para ajudar usuários a criar e monitorar hábitos sustentáveis. Com arquitetura moderna e experiência offline-first, o app combina tecnologia e conscientização ambiental.
 
 ## 🚀 Funcionalidades Principais
 
 ### **Sustentabilidade Prática**
-- **Metas Personalizáveis**: CRUD completo de metas (reduzir lixo, economizar água, etc.) com persistência local e na nuvem.
-- **Provedores Verdes**: Descubra estabelecimentos sustentáveis (com cache offline).
+- **Metas Personalizáveis**: CRUD completo de metas (reduzir lixo, economizar água, etc.) com persistência local e espelhamento na nuvem.
+- **Provedores Verdes**: Descubra estabelecimentos sustentáveis próximos a você (com cache offline).
 - **Atividades Eco**: Registre ações com impacto ambiental mensurável (Backlog).
-- **Progresso Visual**: Acompanhe sua evolução com gráficos e estatísticas.
+- **Progresso Visual**: Acompanhe sua evolução com indicadores claros.
 
 ### **Tecnologia Avançada**
 - **Arquitetura Limpa (Padrão Repository)**: Separação clara entre UI, Domínio (interfaces) e Dados (implementações).
-- **Sincronização em Tempo Real**: Dados atualizados via Supabase (PostgreSQL e Storage).
-- **Funcionalidade Offline-First**: O app prioriza o cache local (`SharedPreferences`) e sincroniza com a nuvem, funcionando perfeitamente sem internet.
-- **Validação Inline**: Experiência de usuário aprimorada com validação de formulário em tempo real.
+- **Sincronização Híbrida**: Dados salvos localmente primeiro (Offline-First) e enviados silenciosamente para o Supabase.
+- **Validação Inline**: Experiência de usuário aprimorada com feedback instantâneo nos formulários.
+- **Tema Dinâmico**: Suporte completo a **Tema Claro e Escuro**, com persistência da escolha do usuário ou sincronia com o sistema.
 
 ### **Experiência do Usuário**
-- **Onboarding Intuitivo**: Introdução suave às funcionalidades e políticas de privacidade.
-- **Avatar Personalizável**: Foto de perfil com upload local, compressão e respeito à LGPD.
-- **Multi-plataforma**: Disponível para mobile (android) e desktop (windows).
-- **Acessibilidade Total**: Design inclusivo e acessível.
+- **Onboarding Intuitivo**: Introdução suave às funcionalidades e políticas de privacidade (com scroll obrigatório).
+- **Perfil Completo**: Adicione **foto e nome** de usuário, salvos localmente com respeito à privacidade.
+- **Multi-plataforma**: Disponível para mobile (Android) e desktop (Windows).
+- **Acessibilidade**: Design inclusivo, acessível e responsivo.
 
 ## 🛠️ Stack Tecnológica
 
@@ -34,9 +34,9 @@ EcoSteps é um aplicativo Flutter desenvolvido para ajudar usuários a criar e m
 - APIs RESTful
 - Row Level Security
 
-**Ferramentas**
-- Gestão de estado nativa (StatefulWidgets)
-- Cache local com SharedPreferences
+**Ferramentas & Gestão**
+- Gestão de estado nativa (`StatefulWidgets` e `ChangeNotifier` para Temas)
+- Cache local com `SharedPreferences`
 - Testes unitários com `mocktail`
 
 ## ⚡ Começando
@@ -53,46 +53,51 @@ EcoSteps é um aplicativo Flutter desenvolvido para ajudar usuários a criar e m
 4. Rode `flutter run` para iniciar o app
 
 ### Comandos Úteis
+```bash
 flutter run          # Iniciar em modo desenvolvimento
 flutter build apk    # Build para Android
 flutter test         # Executar testes
 flutter analyze      # Análise de código
+```
 
 ## 📱 Como Utilizar
 
 ### **Primeiro Acesso**
 - Complete o onboarding para entender as funcionalidades.
-- Leia e aceite as políticas de privacidade para ter acesso ao app.
+- Leia e aceite as políticas de privacidade (role até o fim para habilitar o aceite).
 
 ### **Funcionalidades Diárias**
-- **Gerenciar Metas:** Use o botão "MINHAS METAS" para criar, editar ou excluir suas metas sustentáveis. O app salvará seu progresso mesmo se você estiver offline.
-- **Explorar Provedores:** Acompanhe provedores sustentáveis na sua região.
-- **Personalizar Perfil:** Adicione uma foto de perfil, que fica salva apenas no seu dispositivo.
+- **Gerenciar Metas:** Use o botão "MINHAS METAS" para criar, editar ou excluir suas metas. O app salvará tudo mesmo offline.
+- **Personalizar Perfil:** No menu lateral (Drawer), altere seu **Nome**, sua **Foto** e alterne entre **Tema Claro/Escuro**.
+- **Explorar Provedores:** Visualize a lista de lojas sustentáveis na tela inicial.
 
 ### **Recursos Avançados**
-- Sincronização automática entre dispositivos (via Supabase).
-- Modo offline com todos os dados essenciais (cache de metas e provedores).
-- Sistema de notificações para lembretes (Backlog).
+- Sincronização automática de metas com o Supabase.
+- Persistência robusta de preferências do usuário (Tema e Dados Pessoais).
 
 ## 🏗️ Estrutura do Projeto
 
 O projeto segue princípios de Clean Architecture com o Padrão Repository:
 
-- `lib/domain/`: Contém a lógica de negócio pura.
-  - `entities/`: Os modelos de negócio (ex: `SustainableGoal`, `EcoProvider`).
-  - `repositories/`: As **interfaces** (contratos) que a UI usa (ex: `ISustainableGoalRepository`).
+- `lib/domain/`: Lógica de negócio pura.
+  - `entities/`: Modelos de negócio (ex: `SustainableGoal`).
+  - `repositories/`: Interfaces (contratos) que a UI usa.
 
-- `lib/data/`: Contém a implementação das fontes de dados.
-  - `dtos/`: Objetos de transferência de dados (Ex: `SustainableGoalDto`).
-  - `mappers/`: Conversores que transformam DTOs em Entidades.
-  - `repositories/`: A **implementação** concreta das interfaces (Ex: `SustainableGoalRepository`).
+- `lib/data/`: Implementação das fontes de dados.
+  - `dtos/`: Objetos de transferência (JSON).
+  - `repositories/`: Implementação concreta das interfaces.
 
-- `lib/services/`: Contém os DataSources (os "trabalhadores" que falam com o exterior).
-  - `supabase_repository.dart`: (Implementa `ISustainableGoalRemoteDatasource`) Fala com o Supabase.
-  - `local_cache_service.dart`: (Implementa `ISustainableGoalLocalDatasource`) Fala com o SharedPreferences.
+- `lib/services/`: DataSources e Serviços.
+  - `supabase_repository.dart`: Conexão remota.
+  - `local_cache_service.dart`: Cache local de dados.
+  - `prefs_service.dart`: Gerenciamento de preferências (Tema, User, Políticas).
 
-- `lib/screens/` (Presentation): As telas/páginas do app (ex: `HomeScreen`, `SustainableGoalListPage`).
-- `lib/widgets/` (Presentation): Widgets reutilizáveis (ex: `ProfileDrawer`, `SustainableGoalFormDialog`).
+- `lib/theme/`: Controle de aparência.
+  - `theme_controller.dart`: Lógica de troca de temas.
+  - `app_theme.dart`: Definição das cores e estilos.
+
+- `lib/screens/`: Telas do app (ex: `HomeScreen`, `SustainableGoalListPage`).
+- `lib/widgets/`: Componentes reutilizáveis (ex: `ProfileDrawer`, `SustainableGoalFormDialog`).
 
 ## 🤝 Contribuindo
 
@@ -108,7 +113,6 @@ Quer ajudar a melhorar o EcoSteps?
 - Siga o padrão de código existente
 - Adicione testes para novas funcionalidades
 - Mantenha a documentação atualizada
-- Respeite as convenções do Flutter
 
 ## 📄 Licença
 
@@ -116,9 +120,8 @@ Este projeto está sob licença MIT.
 
 ## 📞 Contato & Suporte
 
-**Desenvolvedora**: Mariana Veiga  
-**Email**: suporte@ecosteps.com (ficticio)
-**Documentação**: `docs/apresentacao.md`
+**Desenvolvedora**: Mariana Veiga 
+**Email**: suporte@ecosteps.com (fictício) 
 
 ---
 
