@@ -118,8 +118,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Em: lib/screens/home_screen.dart
-
   Widget _buildProviderCard(EcoProvider provider) {
     final distanceText =
         provider.distanceKm != null ? '${provider.distanceKm} km' : 'N/A';
@@ -128,23 +126,15 @@ class _HomeScreenState extends State<HomeScreen> {
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: ListTile(
         leading: provider.imageUrl != null && provider.imageUrl!.isNotEmpty
-            // SE TIVER IMAGEM (ex: "http://..."), tenta carregar
             ? CircleAvatar(
                 backgroundImage: NetworkImage(provider.imageUrl!),
-                // Cor de fundo enquanto a imagem carrega
                 backgroundColor:
                     Theme.of(context).colorScheme.secondaryContainer,
               )
-            // SE NÃO TIVER IMAGEM (null ou ""), MOSTRA O ÍCONE DE FALLBACK
             : CircleAvatar(
-                // 1. Define uma cor de fundo (ex: um cinza claro ou verde claro)
                 backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-
-                // 2. Define o ícone
                 child: Icon(
                   Icons.storefront,
-
-                  // 3. Define uma cor para o ícone que contrasta com o fundo
                   color: Theme.of(context).colorScheme.onPrimaryContainer,
                 ),
               ),
@@ -152,39 +142,6 @@ class _HomeScreenState extends State<HomeScreen> {
         subtitle: Text('⭐ ${provider.rating} • $distanceText'),
         trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () => _showComingSoon(context),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('EcoSteps'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () => _revokeConsent(context),
-            tooltip: 'Revogar Consentimento',
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadData,
-            tooltip: 'Atualizar',
-          ),
-        ],
-      ),
-      drawer: const ProfileDrawer(),
-      body: _buildBody(),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const SustainableGoalListPage()),
-          );
-        },
-        label: const Text('MINHAS METAS'),
-        icon: const Icon(Icons.track_changes),
       ),
     );
   }
@@ -254,13 +211,63 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
+    // AQUI FOI ADICIONADO O TÍTULO ACIMA DA LISTA
     return RefreshIndicator(
       onRefresh: _loadData,
       child: ListView.builder(
-        itemCount: _providers.length,
+        // +1 para o título
+        itemCount: _providers.length + 1,
         itemBuilder: (context, index) {
-          return _buildProviderCard(_providers[index]);
+          if (index == 0) {
+            // Primeiro item é o título
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+              child: Text(
+                "Conheça os estabelecimentos sustentáveis próximos de você",
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
+          // Os outros itens são as lojas (index - 1)
+          return _buildProviderCard(_providers[index - 1]);
         },
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('EcoSteps'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () => _revokeConsent(context),
+            tooltip: 'Revogar Consentimento',
+          ),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _loadData,
+            tooltip: 'Atualizar',
+          ),
+        ],
+      ),
+      drawer: const ProfileDrawer(),
+      body: _buildBody(),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const SustainableGoalListPage()),
+          );
+        },
+        label: const Text('MINHAS METAS'),
+        icon: const Icon(Icons.track_changes),
       ),
     );
   }

@@ -7,6 +7,7 @@ class PrefsService {
     _prefs = await SharedPreferences.getInstance();
   }
 
+  // --- POLÍTICAS E ONBOARDING ---
   static bool isPolicyAccepted(String version) {
     return _prefs.getString('policies_version_accepted') == version;
   }
@@ -34,9 +35,16 @@ class PrefsService {
   static String? get acceptedAt => _prefs.getString('accepted_at');
   static bool get onboardingCompleted =>
       _prefs.getBool('onboarding_completed') ?? false;
+
+  // --- CONFIGURAÇÕES GERAIS ---
   static bool get tipsEnabled => _prefs.getBool('tips_enabled') ?? true;
   static set tipsEnabled(bool value) => _prefs.setBool('tips_enabled', value);
 
+  // --- NOME DO USUÁRIO (NOVO) ---
+  static String get userName => _prefs.getString('userName') ?? 'Usuário';
+  static set userName(String value) => _prefs.setString('userName', value);
+
+  // --- FOTO DE PERFIL ---
   static String? get userPhotoPath => _prefs.getString('userPhotoPath');
   static set userPhotoPath(String? value) =>
       _prefs.setString('userPhotoPath', value ?? '');
@@ -55,5 +63,16 @@ class PrefsService {
   static Future<void> clearPhotoData() async {
     await _prefs.remove('userPhotoPath');
     await _prefs.remove('userPhotoUpdatedAt');
+  }
+
+  // --- TEMA ESCURO/CLARO ---
+  // Salva a escolha do usuário: 'light', 'dark' ou 'system'
+  static Future<void> saveThemeMode(String themeMode) async {
+    await _prefs.setString('theme_mode', themeMode);
+  }
+
+  // Recupera o tema salvo (padrão é 'system')
+  static String getThemeMode() {
+    return _prefs.getString('theme_mode') ?? 'system';
   }
 }

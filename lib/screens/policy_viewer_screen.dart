@@ -35,8 +35,15 @@ class _PolicyViewerScreenState extends State<PolicyViewerScreen> {
   }
 
   Future<void> _loadPolicies() async {
-    _privacyText = await rootBundle.loadString('assets/policies/privacy.md');
-    _termsText = await rootBundle.loadString('assets/policies/terms.md');
+    // Carrega os arquivos MD dos assets
+    try {
+      _privacyText = await rootBundle.loadString('assets/policies/privacy.md');
+      _termsText = await rootBundle.loadString('assets/policies/terms.md');
+    } catch (e) {
+      debugPrint('Erro ao carregar políticas: $e');
+      _privacyText = 'Erro ao carregar Política de Privacidade.';
+      _termsText = 'Erro ao carregar Termos de Uso.';
+    }
     if (mounted) {
       setState(() {});
     }
@@ -48,6 +55,7 @@ class _PolicyViewerScreenState extends State<PolicyViewerScreen> {
       final currentScroll = _scrollController.position.pixels;
       if (mounted) {
         setState(() {
+          // Evita divisão por zero se o texto for curto e não tiver scroll
           _scrollProgress = maxScroll > 0 ? currentScroll / maxScroll : 1.0;
         });
       }
@@ -60,6 +68,10 @@ class _PolicyViewerScreenState extends State<PolicyViewerScreen> {
         _privacyRead = true;
         _termsRead = true;
       });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Obrigado por ler! Agora você pode aceitar.')),
+      );
     }
   }
 
@@ -79,33 +91,63 @@ class _PolicyViewerScreenState extends State<PolicyViewerScreen> {
       appBar: AppBar(title: const Text('Políticas e Consentimento')),
       body: Column(
         children: [
-          LinearProgressIndicator(value: _scrollProgress),
+          // Barra de progresso de leitura no topo
+          LinearProgressIndicator(
+            value: _scrollProgress,
+            backgroundColor: Colors.grey[200],
+            valueColor: AlwaysStoppedAnimation<Color>(
+              Theme.of(context).colorScheme.primary,
+            ),
+          ),
           Expanded(
             child: SingleChildScrollView(
               controller: _scrollController,
               padding: const EdgeInsets.all(20),
               child: Column(
+                // CORREÇÃO: Força o texto a ocupar a largura e alinhar à esquerda
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  MarkdownBody(data: _privacyText),
-                  const Divider(),
-                  MarkdownBody(data: _termsText),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _scrollProgress >= 1.0 ? _markAsRead : null,
-                    child: const Text('Marcar como Lido'),
+                  if (_privacyText.isNotEmpty) MarkdownBody(data: _privacyText),
+                  const Divider(
+                      height: 40, thickness: 2), // Divisória mais visível
+                  if (_termsText.isNotEmpty) MarkdownBody(data: _termsText),
+                  const SizedBox(height: 40),
+
+                  // Botão centralizado no final do texto
+                  Center(
+                    child: ElevatedButton.icon(
+                      // Usa 0.99 para evitar erros de arredondamento no scroll
+                      onPressed: _scrollProgress >= 0.99 ? _markAsRead : null,
+                      icon: const Icon(Icons.check),
+                      label: const Text('Li e Aceito os Termos'),
+                    ),
                   ),
                 ],
               ),
             ),
           ),
-          Padding(
+
+          // Área fixa no rodapé para o aceite final
+          Container(
             padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              boxShadow: [
+                BoxShadow(
+                  // ignore: deprecated_member_use
+                  color: Colors.black.withOpacity(0.05),
+                  offset: const Offset(0, -2),
+                  blurRadius: 4,
+                )
+              ],
+            ),
             child: Column(
               children: [
                 CheckboxListTile(
                   title: const Text(
-                      'Aceito as políticas de privacidade e termos.'),
+                      'Declaro que li e concordo com a Política de Privacidade e os Termos de Uso.'),
                   value: _accepted,
+                  // Só libera o checkbox se tiver clicado em "Li e Aceito"
                   onChanged: (_privacyRead && _termsRead)
                       ? (value) {
                           if (mounted) {
@@ -113,12 +155,17 @@ class _PolicyViewerScreenState extends State<PolicyViewerScreen> {
                           }
                         }
                       : null,
+                  controlAffinity: ListTileControlAffinity.leading,
                 ),
-                ElevatedButton(
-                  onPressed: (_accepted && _privacyRead && _termsRead)
-                      ? _accept
-                      : null,
-                  child: const Text('Concordo'),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: (_accepted && _privacyRead && _termsRead)
+                        ? _accept
+                        : null,
+                    child: const Text('Concordo e Continuar'),
+                  ),
                 ),
               ],
             ),
