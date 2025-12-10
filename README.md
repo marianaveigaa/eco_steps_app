@@ -101,7 +101,7 @@ O projeto segue princípios de Clean Architecture com o Padrão Repository:
 
 ## 🤝 Contribuindo
 
-Quer ajudar a melhorar o EcoSteps?
+### Quer ajudar a melhorar o EcoSteps?
 
 1. Faça fork do projeto
 2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
